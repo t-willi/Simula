@@ -1,0 +1,32 @@
+class Custom_dataset(Dataset):
+    def __init__(self, data_dir, transform=ToTensor()):
+      self.all_files = []
+      files = glob.glob(data_dir + '/*.csv')
+      for f in files:
+        temp_df = pd.read_csv(f,sep=" ")
+        self.all_files.append(temp_df)
+
+    def __len__(self):
+      return len(self.all_files)
+
+    def __getitem__(self,idx):
+      all_input_tensors = []
+      all_output_tensors = []
+      #turn list of dataframes into Tensor
+      for files in self.all_files:
+        temp_df=pd.read_csv(f,sep=" ")
+        input_tensor=df.iloc[:,1]
+        input_tensor = torch.tensor(input_tensor)
+        all_input_tensors.append(input_tensor)
+        #output_tensor=df.iloc[:,2:3]
+        output_tensor=df.iloc[:,2:9].values
+        output_tensor=torch.tensor(output_tensor)
+        all_output_tensors.append(output_tensor)
+      X=torch.stack(all_input_tensors)
+      y=torch.stack(all_output_tensors)
+      Sample = X,y
+      return Sample
+
+if __name__ == "__main__":
+  data_dir = "/content/CSV_data"
+  dataset = Custom_dataset(data_dir)
